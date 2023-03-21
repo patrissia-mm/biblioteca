@@ -1,0 +1,7 @@
+<h1> Lista de Libros por categoria</h1>
+<ul>
+{% for l in lista_libros_cat  %}
+    <li>{{ l.titulo }} - {{l.fecha}}</li>
+{% endfor %}
+</ul>
+    
