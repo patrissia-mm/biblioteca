@@ -37,6 +37,8 @@ class Libro(models.Model):
 
     vistas = models.PositiveIntegerField()
 
+    stock = models.PositiveIntegerField(default=0)
+
     objects = LibroManager()
 
     def __str__(self):

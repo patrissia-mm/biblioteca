@@ -33,5 +33,10 @@ class RegistrarPrestamo(FormView):
             devuelto = False
         )
         prestamo.save()
-        
+
+        #Procedimiento para descontar el stock después de un préstamo desde las vistas, puede hacerse tb en los modelos
+        libro = form.cleaned_data['libro']
+        libro.stock = libro.stock - 1
+        libro.save()
+
         return super(RegistrarPrestamo, self).form_valid(form)

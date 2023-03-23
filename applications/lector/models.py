@@ -33,5 +33,11 @@ class Prestamo(models.Model):
 
     objects = PrestamoManager()
 
+    #Sobre escribiend un método para descontar el stock después de un préstamo desde los modelos, puede hacerse tb en las vistas
+    def save(self, *args, **kwargs):
+        self.libro.stock = self.libro.stock -1
+        self.libro.save()
+        super(Prestamo, self).save(*args, **kwargs)
+
     def __str__(self):
         return self.libro.titulo
