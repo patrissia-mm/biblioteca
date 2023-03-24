@@ -1,6 +1,7 @@
 from email.policy import default
 from unittest.util import _MAX_LENGTH
 from django.db import models
+from django.db.models.signals import post_delete
 
 from applications.libro.models import Libro
 from applications.autor.models import Persona
@@ -41,3 +42,12 @@ class Prestamo(models.Model):
 
     def __str__(self):
         return self.libro.titulo
+    
+
+# Triggers   
+    
+def update_libro_stock(sender, instance, **kwargs):
+    instance.libro.stock = instance.libro.stock + 1
+    instance.libro.save()
+
+post_delete.connect(update_libro_stock, sender = Prestamo)

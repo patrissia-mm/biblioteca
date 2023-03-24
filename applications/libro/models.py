@@ -1,5 +1,9 @@
 from unittest.util import _MAX_LENGTH
 from django.db import models
+from django.db.models.signals import post_save
+
+#Importaciones de terceros
+from PIL import Image
 
 from applications.autor.models import Autor
 from .managers import LibroManager, CategoriaManager
@@ -41,5 +45,22 @@ class Libro(models.Model):
 
     objects = LibroManager()
 
+    class Meta:
+        verbose_name = 'Libro'
+        verbose_name_plural = 'Libros'
+
     def __str__(self):
-        return self.titulo
+        return str(self.id) + "-" +self.titulo
+
+# para indicar a la ORM que esta función trababjará como un SIGNAL se le deben pasar ciertos parámetros
+# sender: hace referencia hacia donde se va ejecutar la función
+# instance: la instancia que se está trabajando en ese momento
+# **kwargs: diccionario que generalmente se pasa al usar la ORM de Django
+def optimize_image(sender, instance, **kwargs):
+    # print("======================")
+    # print(instance)
+    if instance.portada:
+        portada = Image.open(instance.portada.path)
+        portada.save(instance.portada.path, quality = 20,  optimize=True)
+
+post_save.connect(optimize_image, sender=Libro)
